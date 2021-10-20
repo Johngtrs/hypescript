@@ -1,0 +1,40 @@
+version: '3.8'
+services: 
+    web:
+        build:
+            context: .
+        env_file: ./.env
+        command: npm run start
+        volumes: 
+            - .:/app/
+            - /app/node_modules
+        ports:
+            - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+        depends_on: 
+            - mariadb
+        environment: 
+            MYSQL_HOST: mariadb
+    mariadb:
+        image: mariadb
+        env_file: ./.env
+        environment: 
+            MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+            MYSQL_USER: $MYSQL_USER
+            MYSQL_PASSWORD: $MYSQL_PASSWORD
+            MYSQL_DATABASE: $MYSQL_DATABASE
+        ports:
+            - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+        volumes:
+            - mysql:/var/lib/mysql
+            - mysql_config:/etc/mysql
+            - ./sql/:/docker-entrypoint-initdb.d/
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        ports:
+        - 8080:80
+        environment:
+            PMA_HOSTS: mariadb
+volumes:
+    mysql:
+    mysql_config:
