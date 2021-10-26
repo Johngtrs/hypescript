@@ -59,6 +59,7 @@ class MovieDAO {
     public async addMovie(movie: CreateMovieDTO) {
         const insert = "INSERT INTO movie(`year`, `rent_number`, `title`, `author`, `editor`, `index`, `bib`, `ref`, `cat_1`, `cat_2`) " + 
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        console.log(movie);
         const binds = [
             movie.year, movie.rent_number, movie.title, 
             movie.author, movie.editor, movie.index, 

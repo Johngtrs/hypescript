@@ -61,7 +61,7 @@ class MovieController {
     public async createMovie(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
             const movieId = await MovieService.create(req.body);
-            res.status(200).json({movieId: movieId});
+            res.status(201).json({movieId: movieId});
         } catch (err) {
               if (err) next(err);
         }

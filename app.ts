@@ -8,7 +8,7 @@ import debug from 'debug';
 import { RoutesConfig } from "./v1/common/routes.config";
 import { MovieRoutesV1 } from "./v1/movies/movie.routes.v1";
 import { HttpError } from "./v1/common/http.error";
-import { Tools } from "./tools";
+import trimmer from "ts-trim-request";
 
 const app: express.Application = express();
 const port = process.env.NODE_DOCKER_PORT;
@@ -43,23 +43,19 @@ app.use((req, res, next) => {
     next();
 });
 
-
 // Trimmer
-app.use((req, res, next) => {
-    Tools.trimAll(req, res, next);
-});
-
+app.use(trimmer.all);
 routes.push(new MovieRoutesV1(app));
 
 // Handle errors
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (err instanceof HttpError) {
-        res.status(err.status).json({error: err.message});
-      } else if (err instanceof Error) {
-        res.status(500).json({error: err.message});
-      } else {
+        res.status(err.status).json({ error: err.message });
+    } else if (err instanceof Error) {
+        res.status(500).json({ error: err.message });
+    } else {
         res.status(500).send("Internal Server Error");
-      }
+    }
 });
 
 const runningMessage = `Server running at http://localhost:${port}`;
@@ -73,3 +69,5 @@ server.listen(port, () => {
     });
     console.log(runningMessage);
 });
+
+module.exports = app;

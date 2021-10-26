@@ -1,19 +1,5 @@
 version: '3.8'
-services: 
-    web:
-        build:
-            context: .
-        env_file: ./.env
-        command: npm run start
-        volumes: 
-            - .:/app/
-            - /app/node_modules
-        ports:
-            - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
-        depends_on: 
-            - mariadb
-        environment: 
-            MYSQL_HOST: mariadb
+services:
     mariadb:
         image: mariadb
         env_file: ./.env
@@ -35,6 +21,19 @@ services:
         - 8080:80
         environment:
             PMA_HOSTS: mariadb
+    web:
+        build: .
+        env_file: ./.env
+        command: npm start
+        volumes: 
+            - .:/app/
+            - /app/node_modules
+        ports:
+            - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+        depends_on: 
+            - mariadb
+        environment: 
+            MYSQL_HOST: mariadb
 volumes:
     mysql:
     mysql_config:
